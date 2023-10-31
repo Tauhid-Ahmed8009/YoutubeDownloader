@@ -1,5 +1,4 @@
 from tkinter import *
-import tkinter as tk
 from tkinter import ttk, filedialog
 from tkinter.ttk import Style, Progressbar
 from PIL import ImageTk, Image  # if you want to implement thumbnail
@@ -7,7 +6,6 @@ import pytube
 from pytube import YouTube, Channel, exceptions
 import win32clipboard
 import threading
-import time
 import webbrowser
 import re
 import sys
@@ -27,7 +25,7 @@ def resource_path(relative_path):
 
 root = Tk()
 root.geometry('350x150')
-root.resizable(0, 0)
+root.resizable(width=0, height=0)
 root.title('YT Downloader')
 
 root.iconbitmap(resource_path("youtube.ico"))
@@ -61,10 +59,13 @@ chnl_lbl = ttk.Label(home_canvas, width=30, justify=CENTER, background='#808080'
 # SIZE LABEL:
 size_lbl = ttk.Label(home_canvas, background='#808080', foreground='white')
 
-
 # DEV NAME LABEL:
 name_lbl = ttk.Label(about_canvas, text='YT Downloader\nVersion 1.02\nDeveloped by: Tauhid Ahmed',
-                     background='#808080', foreground='white').pack(pady=(32, 0))
+                     background='#808080', foreground='white')
+name_lbl.pack(pady=(32, 0))
+
+weblink_hyper_lbl = ttk.Label(about_canvas, foreground='white', background='#808080', text='https://www.tauhid.codes', cursor='hand1')
+weblink_hyper_lbl.pack()
 
 # IMAGE RELATED(ICONS):
 github_logo_file = Image.open(resource_path("githublogo.png"))
@@ -74,11 +75,14 @@ youtube_link_logo = ImageTk.PhotoImage(youtube_logo_file)
 
 # DEV GITHUB LABEL:
 git_hyper_lbl = ttk.Label(about_canvas, image=github_link_logo, text='Click to get me on Github', cursor='hand1')
-git_hyper_lbl.pack(side=LEFT, padx=(150, 5), pady=(10, 40))
+git_hyper_lbl.pack(side=LEFT, padx=(150, 5))
 
 # DEV YOUTUBE LABEL:
 youtube_hyper_lbl = ttk.Label(about_canvas, image=youtube_link_logo, cursor='hand1')
-youtube_hyper_lbl.pack(side=LEFT, pady=(10, 40))
+youtube_hyper_lbl.pack(side=LEFT)
+
+
+
 
 # URL LABEL:
 url_label = Label(home_canvas, width=40, justify=CENTER, bg='#808080', text="<<<Click to Paste>>>", cursor='plus',
@@ -118,6 +122,7 @@ def open_browser(url):
     webbrowser.open_new_tab(url)
 
 
+weblink_hyper_lbl.bind('<Button>', lambda e: open_browser('https://www.tauhid.codes'))
 youtube_hyper_lbl.bind('<Button>', lambda e: open_browser('https://www.youtube.com/channel/UCYNaebGu6N5_XoszYKVjqXA'))
 git_hyper_lbl.bind("<Button>", lambda e: open_browser('https://github.com/Tauhid-Ahmed8009'))
 
@@ -126,7 +131,8 @@ git_hyper_lbl.bind("<Button>", lambda e: open_browser('https://github.com/Tauhid
 def get_info(link):
     global video
     global filename
-    if 'https://www.youtube.com/watch' in link[0:29] and not downloading or 'https://youtu.be/' in link[0:18] and not downloading:
+    if 'https://www.youtube.com/watch' in link[0:29] and not downloading or 'https://youtu.be/' in link[
+                                                                                                   0:18] and not downloading:
         try:
             dl_btn.state(['disabled'])
             yt = YouTube(link, on_progress_callback=progress)
@@ -163,7 +169,8 @@ def get_info(link):
         except pytube.exceptions.VideoUnavailable:
             url_label.config(text="Video unavailable")
             dl_btn.state(['disabled'])
-    elif 'https://www.youtube.com/watch' in link[0:29] and downloading or 'https://youtu.be/' in link[0:18] and downloading:
+    elif 'https://www.youtube.com/watch' in link[0:29] and downloading or 'https://youtu.be/' in link[
+                                                                                                 0:18] and downloading:
         url_label.config(text="Download in progress")
         dl_btn.state(['disabled'])
 
@@ -200,7 +207,8 @@ def download(path):
     dl_btn.state(['disabled'])
     downloading = True
 
-    video.download(output_path=path, skip_existing=False, filename=n_name)  # skip_existing allows overwrite of existing files
+    video.download(output_path=path, skip_existing=False,
+                   filename=n_name)  # skip_existing allows overwrite of existing files
 
 
 def save_file():
@@ -233,7 +241,7 @@ def about_exit():
     home_canvas.pack(expand=True, fill='both')
 
 
-dl_btn.configure(command=save_file, state=['disabled'])
+dl_btn.configure(command=save_file, state='disabled')
 about_btn.configure(command=about)
 back_btn.configure(command=about_exit)
 
